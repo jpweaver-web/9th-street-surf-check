@@ -1,0 +1,6 @@
+.env
+cache.json
+*.o
+*.out
+a.out
+.DS_Store

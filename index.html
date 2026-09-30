@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>9th Street</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+
+    body{
+      font-family:'Rubik',sans-serif;
+      min-height:100vh;
+      background:linear-gradient(160deg,#020c1b 0%,#041e42 40%,#0a3272 70%,#0d47a1 100%);
+      color:#fff;
+      display:flex;
+      flex-direction:column;
+    }
+
+    .page{width:100%;padding:1.5rem 2.5rem;flex:1;display:flex;flex-direction:column}
+
+    header{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:2rem 2.5rem;
+      background:rgba(255,255,255,0.07);
+      backdrop-filter:blur(20px);
+      border:1px solid rgba(255,255,255,0.15);
+      border-radius:20px;
+      margin-bottom:1.5rem;
+    }
+    header h1{
+      font-family:"Brush Script MT",cursive;
+      font-size:88px;font-weight:400;line-height:0.95;
+      text-shadow:0 2px 20px rgba(0,100,255,0.4);
+    }
+    .header-sub{font-size:17px;color:rgba(255,255,255,0.75);margin-top:8px;font-family:'Quicksand',sans-serif;font-weight:600}
+    .refresh-btn{
+      display:flex;align-items:center;gap:9px;
+      padding:13px 28px;
+      background:rgba(255,255,255,0.1);
+      border:1px solid rgba(255,255,255,0.22);
+      border-radius:999px;
+      font-family:'Quicksand',sans-serif;font-size:15px;font-weight:700;
+      color:#fff;cursor:pointer;transition:background .2s;white-space:nowrap;
+      margin-left:auto;
+    }
+    .refresh-btn:hover{background:rgba(255,255,255,0.18)}
+    .refresh-btn:disabled{opacity:.5;cursor:not-allowed}
+    .dot{width:10px;height:10px;border-radius:50%;background:#4ade80;flex-shrink:0}
+    .dot.loading{background:#fbbf24;animation:pulse 1s infinite}
+    .dot.error{background:#f87171}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+
+    .grid{
+      display:grid;
+      grid-template-columns:1.3fr 1.9fr 1.1fr;
+      grid-template-rows:minmax(340px,1fr) 340px minmax(140px,auto);
+      gap:1.25rem;
+      flex:1;
+    }
+
+    .card{
+      background:rgba(255,255,255,0.07);
+      backdrop-filter:blur(20px);
+      border:1px solid rgba(255,255,255,0.14);
+      border-radius:20px;
+      padding:1.75rem;
+      color:#fff;
+    }
+    .lbl{
+      font-family:'Quicksand',sans-serif;
+      font-size:24px;font-weight:700;
+      letter-spacing:.04em;text-transform:uppercase;
+      color:rgba(255,255,255,0.8);
+      margin-bottom:1.1rem;
+    }
+
+    /* RATING CARD */
+    .rating-card{grid-column:1;grid-row:1/4;display:flex;flex-direction:column;gap:1.25rem}
+    .rating-num{font-size:140px;font-weight:300;line-height:1;letter-spacing:-6px}
+    .bar-track{height:7px;background:rgba(255,255,255,0.15);border-radius:999px;overflow:hidden}
+    .bar-fill{height:100%;border-radius:999px;background:#4ade80;width:0%;transition:width .6s ease,background .6s ease}
+    .rating-sub{font-size:15px;color:rgba(255,255,255,0.55);font-family:'Quicksand',sans-serif;font-weight:600}
+    
+    .comparison {
+      margin-top: 0.5rem;
+      background: rgba(0,0,0,0.2);
+      border-radius: 14px;
+      padding: 1.25rem 1rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      flex: 1;
+      min-height: 0;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .comp-empty { font-size:14px; color:rgba(255,255,255,0.4); font-style:italic; text-align:center; width:100%; margin:auto }
+
+    #ratingComparisonCard {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+    }
+
+    /* Top Prompt: Restored large size with UI header font/color style */
+    .song-intro-lbl {
+      font-family: inherit;
+      font-size: 25px;
+      font-weight: 300;
+      letter-spacing: 1.5px;
+      color: rgba(248, 248, 248, 0.891);
+      margin-top: 2.5rem;
+      margin-bottom: -5rem;
+      font-family: fantasy;
+
+    }
+
+    /* Album Cover: Shifted down further */
+    #tierImage {
+      width: 70%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 8px;
+      transform: translateY(120px); 
+    }
+
+    /* Bottom Song Container: Shifted up closer to image bottom */
+    .rating-details-bottom {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      margin-top: auto;
+      transform: translateY(-200px); 
+      font-size: 40 px;
+    }
+
+    /* WAVE CARD */
+    .wave-card{
+      grid-column:2;
+      grid-row:1;
+      display:flex;
+      flex-direction:column;
+    }
+    .wave-card-body{
+      display:flex;
+      flex-direction:column;
+      gap:0.75rem;
+      flex:1;
+      overflow:hidden;
+    }
+    .wave-scene{
+      flex:1;position:relative;
+      border-radius:14px;overflow:hidden;
+      background:linear-gradient(180deg,rgba(5,20,50,0.6) 0%,rgba(2,10,30,0.8) 100%);
+      min-height:0;
+      width:100%;
+    }
+    .wave-scene svg{position:absolute;inset:0;width:100%;height:100%}
+    .wave-readout-row{
+      display:flex;
+      flex-direction:column;
+      align-items:flex-start;
+      gap:0.25rem;
+      margin-top:.2rem;
+    }
+    .wave-readout{display:flex;align-items:baseline;gap:.4rem;flex-wrap:wrap}
+    .wave-ft{font-size:42px;font-weight:300;line-height:1}
+    .wave-unit{font-size:18px;color:rgba(255,255,255,0.65)}
+    .wave-desc{font-size:14px;color:rgba(255,255,255,0.6);font-family:'Quicksand',sans-serif;font-weight:600;margin-left:.5rem}
+    .swell-info{font-size:15px;color:rgba(255,255,255,0.75);font-family:'Quicksand',sans-serif;display:flex;align-items:center;gap:6px;font-weight:600}
+
+    /* WIND */
+    .wind-card{grid-column:3;grid-row:1;display:flex;flex-direction:column}
+    .compass-wrap{
+      flex:1;position:relative;
+      display:flex;align-items:center;justify-content:center;
+      min-height:200px;overflow:visible;
+    }
+    .compass-svg{width:min(105%,310px);height:min(105%,310px)}
+    .c-arrow{
+      position:absolute;left:50%;top:50%;
+      width:5px;height:88px;
+      background:#fff;
+      transform-origin:bottom center;
+      transform:translateX(-50%) translateY(-100%) rotate(0deg);
+      border-radius:3px;
+      filter:drop-shadow(0 0 6px rgba(255,255,255,0.7));
+      transition:transform 0.8s cubic-bezier(0.4,0,0.2,1)
+    }
+    .c-arrow::after{content:"";position:absolute;bottom:100%;left:50%;margin-left:-9px;border-left:9px solid transparent;border-right:9px solid transparent;border-bottom:18px solid #fff}
+    .wind-readout{text-align:center;padding-top:.75rem;border-top:1px solid rgba(255,255,255,0.1)}
+    .wind-spd{font-size:48px;font-weight:300}
+    .wind-unit-lbl{font-size:17px;color:rgba(255,255,255,0.65);margin-left:4px}
+    .wind-dir-lbl{display:block;font-size:20px;color:rgba(255,255,255,0.8);font-family:'Quicksand',sans-serif;font-weight:600;margin-top:2px}
+
+    /* TIDE */
+    .tide-card{grid-column:2/4;grid-row:2;display:flex;flex-direction:column}
+    #tideGraph{display:block;width:100%;flex:1;border-radius:10px;min-height:190px}
+    .tide-meta{display:flex;gap:2.5rem;margin-top:1rem;flex-wrap:wrap}
+    .tide-meta-item{font-size:20px;color:rgba(255,255,255,0.7);font-family:'Quicksand',sans-serif;font-weight:600}
+    .tide-meta-item strong{color:#fff;font-weight:700}
+
+    /* TEMP */
+    .temp-card{
+      grid-column:2/4;grid-row:3;
+      display:flex;flex-direction:column;
+    }
+    .temp-row{
+      display:flex;gap:1.25rem;
+      flex:1;
+      margin-top:.5rem;
+      min-height:0;
+    }
+    .temp-pill{
+      flex:1;
+      background:rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.12);
+      border-radius:14px;
+      padding:1rem 1.25rem;
+      text-align:center;
+      display:flex;flex-direction:column;
+      justify-content:center;align-items:center;
+      overflow:hidden;
+    }
+    .temp-pill-lbl{font-size:14px;color:rgba(255,255,255,0.65);font-family:'Quicksand',sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.3rem}
+    .temp-pill-val{font-size:44px;font-weight:300;line-height:1}
+    .temp-pill-unit{font-size:20px;color:rgba(255,255,255,0.65)}
+
+    .dash{color:rgba(255,255,255,0.25)}
+
+    /* Tide tooltip */
+    .tide-tooltip{
+      position:fixed;
+      background:rgba(10,20,50,0.92);
+      border:1px solid rgba(255,255,255,0.2);
+      backdrop-filter:blur(10px);
+      border-radius:10px;
+      padding:.5rem .85rem;
+      font-family:'Quicksand',sans-serif;
+      font-size:14px;font-weight:600;
+      color:#fff;
+      pointer-events:none;
+      display:none;
+      z-index:999;
+      white-space:nowrap;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <div>
+      <h1>9th Street</h1>
+      <div class="header-sub">Huntington Beach, CA &nbsp;·&nbsp; <span id="updatedTime">—</span> &nbsp;·&nbsp; Conditions: <span id="dataAge" style="color:rgba(255,220,80,0.9)">—</span></div>
+    </div>
+    <button class="refresh-btn" id="refreshBtn">
+      <div class="dot" id="dot"></div>
+      <span id="btnLbl">Check conditions</span>
+    </button>
+  </header>
+
+  <div class="grid">
+
+    <!-- RATING CARD -->
+    <div class="card rating-card">
+      <div class="lbl">Surf Rating</div>
+      <div class="rating-num" id="ratingNum"><span class="dash">—</span></div>
+      <div class="bar-track"><div class="bar-fill" id="ratingBar"></div></div>
+      
+      <div class="comparison" id="compBlock">
+        <div class="comp-empty" id="compEmpty">refresh to see today's rating</div>
+        
+        <div id="ratingComparisonCard" style="display: none;">
+          <!-- Top Prompt Label -->
+          <div class="song-intro-lbl">If the conditions were a song...</div>
+
+          <!-- Centered Album Image -->
+          <img id="tierImage" src="" alt="Rating Reaction" onerror="this.style.display='none'"/>
+          
+          <!-- Bottom Song Details -->
+          <div class="rating-details-bottom">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
+              <h4 id="tierTitle" style="font-family: inherit; font-size: 20px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255, 255, 255, 0.9); margin: 0;"></h4>
+              <button id="audioToggleBtn" style="display: none; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; width: 28px; height: 28px; color: #fff; cursor: pointer; align-items: center; justify-content: center; font-size: 12px; padding: 0;">
+                ▶
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WAVE HEIGHT & SWELL DIRECTION -->
+    <div class="card wave-card">
+      <div class="lbl">Wave Height</div>
+      <div class="wave-card-body">
+        <div class="wave-scene">
+          <svg id="waveSvg" viewBox="0 0 600 280" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="seaGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(30,120,210,0.9)"/>
+                <stop offset="100%" stop-color="rgba(5,30,80,0.98)"/>
+              </linearGradient>
+              <linearGradient id="waveGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="rgba(70,170,240,0.95)"/>
+                <stop offset="50%" stop-color="rgba(25,90,180,0.92)"/>
+                <stop offset="100%" stop-color="rgba(5,30,80,0.98)"/>
+              </linearGradient>
+            </defs>
+
+            <rect x="0" y="0" width="600" height="280" fill="rgba(5,15,40,0.3)"/>
+            <rect x="0" y="230" width="600" height="50" fill="url(#seaGrad)"/>
+            
+            <path id="mainWave" d="M0,230 L180,230 C220,228 260,215 290,200 C310,180 320,165 330,160 C345,146 360,142 375,146 C395,150 410,168 440,196 C470,226 500,220 600,225 L600,280 L0,280 Z" fill="url(#waveGrad)"/>
+
+            <line id="waveCrestLine" x1="28" y1="160" x2="360" y2="160" stroke="rgba(255,255,255,0.25)" stroke-width="1" stroke-dasharray="4,4"/>
+            <g id="personGroup">
+              <circle cx="510" cy="166" r="7" fill="rgba(255,255,255,0.92)"/>
+              <line x1="510" y1="173" x2="510" y2="178" stroke="rgba(255,255,255,0.92)" stroke-width="4" stroke-linecap="round"/>
+              <line x1="510" y1="178" x2="510" y2="205" stroke="rgba(255,255,255,0.92)" stroke-width="5" stroke-linecap="round"/>
+              <line x1="510" y1="183" x2="499" y2="197" stroke="rgba(255,255,255,0.92)" stroke-width="3.5" stroke-linecap="round"/>
+              <line x1="510" y1="183" x2="521" y2="197" stroke="rgba(255,255,255,0.92)" stroke-width="3.5" stroke-linecap="round"/>
+              <line x1="510" y1="205" x2="504" y2="230" stroke="rgba(255,255,255,0.92)" stroke-width="4" stroke-linecap="round"/>
+              <line x1="510" y1="205" x2="516" y2="230" stroke="rgba(255,255,255,0.92)" stroke-width="4" stroke-linecap="round"/>
+              
+              <line x1="528" y1="166" x2="528" y2="230" stroke="rgba(255,255,255,0.35)" stroke-width="1" stroke-dasharray="3,2"/>
+              <line x1="524" y1="166" x2="532" y2="166" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+              <line x1="524" y1="230" x2="532" y2="230" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
+              <text x="536" y="202" fill="rgba(255,255,255,0.5)" font-size="11" font-family="Quicksand,sans-serif">5'10"</text>
+            </g>
+
+            <line id="bracketVert" x1="28" y1="160" x2="28" y2="230" stroke="rgba(255,220,50,0.85)" stroke-width="1.5" stroke-dasharray="5,3"/>
+            <line id="bracketTopTick" x1="22" y1="160" x2="34" y2="160" stroke="rgba(255,220,50,0.85)" stroke-width="2"/>
+            <line x1="22" y1="230" x2="34" y2="230" stroke="rgba(255,220,50,0.85)" stroke-width="2"/>
+            <text id="bracketLabel" x="38" y="198" fill="rgba(255,220,50,0.95)" font-size="14" font-weight="700" font-family="Quicksand,sans-serif">— ft</text>
+          </svg>
+        </div>
+
+        <div class="wave-readout-row">
+          <div class="wave-readout">
+            <span class="wave-ft" id="waveLbl"><span class="dash">—</span></span>
+            <span class="wave-unit">ft</span>
+            <span class="wave-desc" id="waveDesc"></span>
+          </div>
+          <div class="swell-info">
+            Swell: <span id="swellDir" style="color:#fff;font-weight:700">—</span>
+            <svg id="swellArrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="transform:rotate(0deg);transition:transform 0.5s ease;display:inline-block"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WIND -->
+    <div class="card wind-card">
+      <div class="lbl">Wind</div>
+      <div class="compass-wrap">
+        <svg class="compass-svg" viewBox="-10 -5 260 260" fill="none">
+          <circle cx="120" cy="120" r="108" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+          <circle cx="120" cy="120" r="72" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
+          <circle cx="120" cy="120" r="5" fill="rgba(255,255,255,0.4)"/>
+          <line x1="120" y1="13" x2="120" y2="30" stroke="rgba(255,255,255,0.55)" stroke-width="2"/>
+          <line x1="227" y1="120" x2="210" y2="120" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
+          <line x1="120" y1="227" x2="120" y2="210" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
+          <line x1="13" y1="120" x2="30" y2="120" stroke="rgba(255,255,255,0.35)" stroke-width="2"/>
+          <line x1="193" y1="47" x2="182" y2="58" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+          <line x1="193" y1="193" x2="182" y2="182" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+          <line x1="47" y1="193" x2="58" y2="182" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+          <line x1="47" y1="47" x2="58" y2="58" stroke="rgba(255,255,255,0.2)" stroke-width="1.5"/>
+          <text x="120" y="14" text-anchor="middle" font-size="20" font-weight="700" fill="#fff" font-family="Quicksand,sans-serif">N</text>
+          <text x="235" y="126" text-anchor="middle" font-size="18" font-weight="600" fill="rgba(255,255,255,0.8)" font-family="Quicksand,sans-serif">E</text>
+          <text x="120" y="240" text-anchor="middle" font-size="18" font-weight="600" fill="rgba(255,255,255,0.8)" font-family="Quicksand,sans-serif">S</text>
+          <text x="5" y="126" text-anchor="middle" font-size="18" font-weight="600" fill="rgba(255,255,255,0.8)" font-family="Quicksand,sans-serif">W</text>
+          <text x="193" y="45" text-anchor="middle" font-size="13" fill="rgba(255,255,255,0.4)" font-family="Quicksand,sans-serif">NE</text>
+          <text x="193" y="200" text-anchor="middle" font-size="13" fill="rgba(255,255,255,0.4)" font-family="Quicksand,sans-serif">SE</text>
+          <text x="47" y="200" text-anchor="middle" font-size="13" fill="rgba(255,255,255,0.4)" font-family="Quicksand,sans-serif">SW</text>
+          <text x="47" y="45" text-anchor="middle" font-size="13" fill="rgba(255,255,255,0.4)" font-family="Quicksand,sans-serif">NW</text>
+        </svg>
+        <div class="c-arrow" id="windArrow"></div>
+      </div>
+      <div class="wind-readout">
+        <span class="wind-spd" id="windSpd"><span class="dash">—</span></span>
+        <span class="wind-unit-lbl">kts</span>
+        <span class="wind-dir-lbl" id="windDir"></span>
+      </div>
+    </div>
+
+    <!-- TIDE -->
+    <div class="card tide-card">
+      <div class="lbl">Tide</div>
+      <canvas id="tideGraph" height="190"></canvas>
+      <div class="tide-meta">
+        <div class="tide-meta-item">Now: <strong><span id="currentTide">—</span> ft</strong></div>
+      </div>
+    </div>
+
+    <!-- TEMP -->
+    <div class="card temp-card">
+      <div class="lbl">Temperature</div>
+      <div class="temp-row">
+        <div class="temp-pill">
+          <div class="temp-pill-lbl">Air</div>
+          <div class="temp-pill-val"><span id="airTemp"><span class="dash">—</span></span><span class="temp-pill-unit">°F</span></div>
+        </div>
+        <div class="temp-pill">
+          <div class="temp-pill-lbl">Water</div>
+          <div class="temp-pill-val"><span id="waterTemp"><span class="dash">—</span></span><span class="temp-pill-unit">°F</span></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+import { getRatingCard } from './ratingMap.js';
+
+let currentAudio = null;
+let currentAudioSrc = null;
+
+function setupAudioButton(audioSrc) {
+  const btn = document.getElementById("audioToggleBtn");
+  if (!btn) return;
+
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio = null;
+    btn.textContent = "▶";
+  }
+
+  if (!audioSrc) {
+    btn.style.display = "none";
+    return;
+  }
+
+  btn.style.display = "inline-flex";
+  currentAudioSrc = audioSrc;
+
+  btn.onclick = () => {
+    if (!currentAudio) {
+      currentAudio = new Audio(currentAudioSrc);
+      currentAudio.volume = 0.5;
+      currentAudio.onended = () => { btn.textContent = "▶"; };
+    }
+
+    if (currentAudio.paused) {
+      currentAudio.play().catch(err => console.error("Audio playback error:", err));
+      btn.textContent = "⏸";
+    } else {
+      currentAudio.pause();
+      btn.textContent = "▶";
+    }
+  };
+}
+
+function ratingColor(r){if(r>=8)return"#4ade80";if(r>=6)return"#fbbf24";if(r>=4)return"#f97316";return"#f87171"}
+function updateWindArrow(deg){document.getElementById("windArrow").style.transform=`translateX(-50%) translateY(-100%) rotate(${(deg+180)%360}deg)`}
+
+/* WAVE SCENE */
+function updateWaveScene(wh){
+  document.getElementById("waveLbl").textContent=wh.toFixed(1);
+  const descs=["Flat","Ankle to knee high","Waist high","Chest to head high","Overhead","Well overhead","Double overhead+"];
+  const thresholds=[1.2,2,3,4.5,6,8];
+  const i=thresholds.findIndex(t=>wh<t);
+  document.getElementById("waveDesc").textContent=descs[i<0?descs.length-1:i];
+
+  const pxPerFt=10.98;
+  const seaY=230;
+  const crestY=Math.max(20,Math.min(215,seaY-wh*pxPerFt));
+
+  document.getElementById("bracketVert").setAttribute("y1",crestY);
+  document.getElementById("bracketVert").setAttribute("y2",seaY);
+  document.getElementById("bracketTopTick").setAttribute("y1",crestY);
+  document.getElementById("bracketTopTick").setAttribute("y2",crestY);
+  const bl=document.getElementById("bracketLabel");
+  bl.setAttribute("y",(crestY+seaY)/2+5);
+  bl.textContent=wh.toFixed(1)+" ft";
+
+  const crestLine=document.getElementById("waveCrestLine");
+  if(crestLine){
+    crestLine.setAttribute("y1",crestY);
+    crestLine.setAttribute("y2",crestY);
+  }
+
+  const c1=crestY+10,c2=crestY+25;
+  document.getElementById("mainWave").setAttribute("d",`
+    M0,${seaY} L180,${seaY}
+    C220,228 260,215 290,${c2}
+    C310,${c1+10} 320,${crestY+8} 330,${crestY}
+    C345,${crestY-14} 360,${crestY-18} 375,${crestY-14}
+    C395,${crestY-10} 410,${crestY+8} 440,${c1+36}
+    C470,${c2+36} 500,220 600,225
+    L600,280 L0,280 Z`);
+}
+
+/* TIDE GRAPH */
+function filterSurfingHours(times,heights){
+  const now=new Date();
+  const start6am=new Date(now.getFullYear(),now.getMonth(),now.getDate(),6,0,0).getTime()/1000;
+  const endOfDay=new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59).getTime()/1000;
+  const ft=[],fh=[];
+  for(let i=0;i<times.length;i++){
+    if(times[i]>=start6am && times[i]<endOfDay){
+      ft.push(times[i]);
+      fh.push(heights[i]);
+    }
+  }
+  return[ft,fh];
+}
+
+let _tideTimes = [];
+let _tideHeights = [];
+let _tideMinT = 0, _tideMaxT = 0, _tideMinH = 0, _tideMaxH = 0;
+const TIDE_PL = 44, TIDE_PR = 14, TIDE_PT = 18, TIDE_PB = 30;
+
+function setupTideHover() {
+  const canvas = document.getElementById("tideGraph");
+  const tooltip = document.getElementById("tideTooltip");
+
+  function getHoverData(clientX, clientY) {
+    if (_tideTimes.length < 2) return null;
+    const rect = canvas.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const W = rect.width;
+    const t = _tideMinT + (x - TIDE_PL) / (W - TIDE_PL - TIDE_PR) * (_tideMaxT - _tideMinT);
+    if (t < _tideMinT || t > _tideMaxT) return null;
+    let h = null;
+    for (let i = 0; i + 1 < _tideTimes.length; i++) {
+      if (_tideTimes[i] <= t && t <= _tideTimes[i+1]) {
+        const frac = (t - _tideTimes[i]) / (_tideTimes[i+1] - _tideTimes[i]);
+        h = _tideHeights[i] + frac * (_tideHeights[i+1] - _tideHeights[i]);
+        break;
+      }
+    }
+    if (h === null) return null;
+    const d = new Date(t * 1000);
+    const timeStr = d.toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
+    return { timeStr, h: h.toFixed(2) };
+  }
+
+  canvas.addEventListener("mousemove", (e) => {
+    const data = getHoverData(e.clientX, e.clientY);
+    if (data) {
+      tooltip.style.display = "block";
+      tooltip.style.left = (e.clientX + 14) + "px";
+      tooltip.style.top  = (e.clientY - 36) + "px";
+      tooltip.textContent = `${data.timeStr}  ·  ${data.h} ft`;
+    } else {
+      tooltip.style.display = "none";
+    }
+  });
+
+  canvas.addEventListener("mouseleave", () => { tooltip.style.display = "none"; });
+
+  canvas.addEventListener("touchmove", (e) => {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const data = getHoverData(touch.clientX, touch.clientY);
+    if (data) {
+      tooltip.style.display = "block";
+      tooltip.style.left = (touch.clientX + 14) + "px";
+      tooltip.style.top  = (touch.clientY - 50) + "px";
+      tooltip.textContent = `${data.timeStr}  ·  ${data.h} ft`;
+    }
+  }, { passive: false });
+
+  canvas.addEventListener("touchend", () => { tooltip.style.display = "none"; });
+}
+
+function drawTide(timesRaw,heightsRaw){
+  const[times,heights]=filterSurfingHours(timesRaw,heightsRaw);
+  _tideTimes = times; _tideHeights = heights;
+  const canvas=document.getElementById("tideGraph");
+  const ctx=canvas.getContext("2d");
+  const dpr=window.devicePixelRatio||1;
+  const rect=canvas.getBoundingClientRect();
+  canvas.width=rect.width*dpr;canvas.height=rect.height*dpr;
+  ctx.scale(dpr,dpr);
+  const W=rect.width,H=rect.height;
+  ctx.clearRect(0,0,W,H);
+  if(!times||times.length<2)return;
+
+  const minH = -2;
+  const maxH = 6;
+  const now=new Date();
+  const minT=new Date(now.getFullYear(),now.getMonth(),now.getDate(),6,0,0).getTime()/1000;
+  const maxT=new Date(now.getFullYear(),now.getMonth(),now.getDate(),23,59,59).getTime()/1000;
+  _tideMinT=minT; _tideMaxT=maxT; _tideMinH=minH; _tideMaxH=maxH;
+  const pL=44,pR=14,pT=18,pB=30;
+  const xp=t=>pL+(t-minT)/(maxT-minT)*(W-pL-pR);
+  const yp=v=>pT+(maxH-v)/(maxH-minH)*(H-pT-pB);
+
+  ctx.font=`13px Quicksand,sans-serif`;
+  for(let v=Math.floor(minH);v<=Math.ceil(maxH);v++){
+    const yy=yp(v);
+    ctx.beginPath();ctx.moveTo(pL,yy);ctx.lineTo(W-pR,yy);
+    ctx.strokeStyle="rgba(255,255,255,0.08)";ctx.lineWidth=1;ctx.stroke();
+    if(yy>H-pB-12 || yy<pT+4) continue;
+    ctx.fillStyle="rgba(255,255,255,0.5)";ctx.textAlign="right";ctx.textBaseline="middle";
+    ctx.fillText(v+"ft",pL-6,yy);
+  }
+
+  for(let h=6;h<=21;h+=3){
+    const t=new Date(now.getFullYear(),now.getMonth(),now.getDate(),h,0,0).getTime()/1000,xx=xp(t);
+    ctx.beginPath();ctx.moveTo(xx,pT);ctx.lineTo(xx,H-pB);
+    ctx.strokeStyle="rgba(255,255,255,0.06)";ctx.lineWidth=1;ctx.stroke();
+    ctx.fillStyle="rgba(255,255,255,0.45)";ctx.textAlign="center";ctx.textBaseline="top";
+    const lbl=h===12?"12pm":h<12?h+"am":(h-12)+"pm";
+    ctx.fillText(lbl,xx,H-pB+5);
+  }
+
+  // filled area
+  ctx.beginPath();ctx.moveTo(xp(times[0]),yp(heights[0]));
+  for(let i=1;i<times.length;i++)ctx.lineTo(xp(times[i]),yp(heights[i]));
+  const grad=ctx.createLinearGradient(0,pT,0,H-pB);
+  grad.addColorStop(0,"rgba(74,222,128,0.3)");grad.addColorStop(1,"rgba(74,222,128,0.03)");
+  ctx.lineTo(xp(times[times.length-1]),H-pB);ctx.lineTo(xp(times[0]),H-pB);ctx.closePath();
+  ctx.fillStyle=grad;ctx.fill();
+
+  // line
+  ctx.beginPath();ctx.moveTo(xp(times[0]),yp(heights[0]));
+  for(let i=1;i<times.length;i++)ctx.lineTo(xp(times[i]),yp(heights[i]));
+  ctx.strokeStyle="rgba(74,222,128,0.9)";ctx.lineWidth=2.5;ctx.stroke();
+
+  // PROMINENT NOW INDICATOR
+  const nowSec=Date.now()/1000;
+  if(nowSec>=minT&&nowSec<=maxT){
+    const xx=xp(nowSec);
+    
+    ctx.strokeStyle="#fbbf24";
+    ctx.lineWidth=3;
+    ctx.setLineDash([6,4]);
+    ctx.beginPath();
+    ctx.moveTo(xx,pT-6);
+    ctx.lineTo(xx,H-pB);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    let currentH = null;
+    for (let i = 0; i + 1 < times.length; i++) {
+      if (times[i] <= nowSec && nowSec <= times[i+1]) {
+        const frac = (nowSec - times[i]) / (times[i+1] - times[i]);
+        currentH = heights[i] + frac * (heights[i+1] - heights[i]);
+        break;
+      }
+    }
+    if(currentH !== null){
+      const cy = yp(currentH);
+      ctx.fillStyle="rgba(251,191,36,0.3)";
+      ctx.beginPath();
+      ctx.arc(xx,cy,10,0,2*Math.PI);
+      ctx.fill();
+
+      ctx.fillStyle="#fbbf24";
+      ctx.beginPath();
+      ctx.arc(xx,cy,5,0,2*Math.PI);
+      ctx.fill();
+    }
+
+    ctx.fillStyle="#fbbf24";
+    const bw=42, bh=20, bx=xx - bw/2, by=pT - 18;
+    ctx.beginPath();
+    ctx.roundRect ? ctx.roundRect(bx, by, bw, bh, 6) : ctx.rect(bx, by, bw, bh);
+    ctx.fill();
+
+    ctx.fillStyle="#041e42";
+    ctx.font=`bold 12px Rubik,sans-serif`;
+    ctx.textAlign="center";
+    ctx.textBaseline="middle";
+    ctx.fillText("NOW", xx, by + bh/2);
+  }
+}
+
+/* MAIN FETCH */
+async function updateConditions(){
+  const btn=document.getElementById("refreshBtn");
+  const dot=document.getElementById("dot");
+  const lbl=document.getElementById("btnLbl");
+  btn.disabled=true;dot.className="dot loading";lbl.textContent="Updating…";
+  try{
+    const res=await fetch("http://127.0.0.1:8080/api/conditions");
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.error||"fetch failed");
+
+    const rating=Number(data.rating);
+    document.getElementById("ratingNum").textContent=rating.toFixed(1);
+    const bar=document.getElementById("ratingBar");
+    bar.style.width=Math.min(100,(rating/10)*100)+"%";
+    bar.style.background=ratingColor(rating);
+
+    // Update Image Rating Card
+    const card = getRatingCard(rating);
+    document.getElementById('compEmpty').style.display = 'none';
+    document.getElementById('tierTitle').textContent = `${rating.toFixed(1)} — ${card.title}`;
+    const imgEl = document.getElementById('tierImage');
+    imgEl.src = card.image;
+    imgEl.style.display = 'block';
+    document.getElementById('ratingComparisonCard').style.display = 'flex';
+
+    // Hook up audio player button with audio track relative path from ratingMap.js
+    setupAudioButton(card.audio);
+
+    updateWaveScene(Number(data.waveHeight));
+
+    const windDir=Number(data.windDirectionDegrees);
+    document.getElementById("windSpd").textContent=Number(data.windSpeed).toFixed(1);
+    document.getElementById("windDir").textContent=data.windDirection||"";
+    updateWindArrow(windDir);
+
+    if(document.getElementById("swellDir"))
+      document.getElementById("swellDir").textContent=
+        (data.swellDirection||"—")+(data.swellDirectionDegrees?" ("+Math.round(data.swellDirectionDegrees)+"°)":"");
+
+    if(data.swellDirectionDegrees && document.getElementById("swellArrow")){
+      document.getElementById("swellArrow").style.transform = `rotate(${data.swellDirectionDegrees}deg)`;
+    }
+
+    if(data.updatedEpoch && document.getElementById("dataAge")){
+      const ageMin=Math.round((Date.now()/1000-data.updatedEpoch)/60);
+      const ageTxt=ageMin<60?ageMin+"m old":(Math.floor(ageMin/60)+"h "+ageMin%60+"m old");
+      document.getElementById("dataAge").textContent=ageTxt;
+    }
+
+    document.getElementById("airTemp").textContent=Number(data.airTemp).toFixed(1);
+    document.getElementById("waterTemp").textContent=Number(data.waterTemp).toFixed(1);
+    document.getElementById("currentTide").textContent=Number(data.currentTide).toFixed(1);
+
+    let displayTime;
+    if(data.updatedEpoch){
+      const d=new Date(data.updatedEpoch*1000);
+      displayTime="Updated "+d.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});
+    } else if(data.updated){
+      const d=new Date(data.updated.trim());
+      displayTime=isNaN(d)?"Updated just now":"Updated "+d.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});
+    } else {
+      displayTime="Updated "+new Date().toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});
+    }
+    document.getElementById("updatedTime").textContent=displayTime;
+
+    if(data.tideTimes&&data.tideHeights)
+      setTimeout(()=>drawTide(data.tideTimes.map(Number),data.tideHeights.map(Number)),100);
+
+    dot.className="dot";lbl.textContent="Refresh conditions";
+  }catch(err){
+    console.error(err);dot.className="dot error";lbl.textContent="Error — run ./server first";
+  }finally{btn.disabled=false;}
+}
+
+document.getElementById("refreshBtn").addEventListener("click", updateConditions);
+setupTideHover();
+updateConditions();
+</script>
+<div class="tide-tooltip" id="tideTooltip"></div>
+</body>
+</html>
