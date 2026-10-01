@@ -197,8 +197,14 @@ int main() {
             res.set_content(err.dump(), "application/json");
         }
     });
+    // Root route to prevent 404 on base URL
+    svr.Get("/", [](const httplib::Request&, httplib::Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "*");
+        res.set_content("SurfSpotApp C++ Backend is Live!", "text/plain");
+    });
 
     svr.Get("/health", [](const httplib::Request&, httplib::Response& res) {
+        res.set_header("Access-Control-Allow-Origin", "*");
         res.set_content("ok", "text/plain");
     });
 
