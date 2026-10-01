@@ -117,24 +117,19 @@ nlohmann::json buildResponseJson() {
     ss << f.rdbuf();
     auto cached = nlohmann::json::parse(ss.str());
 
-    // 2. Get live tide data from NOAA (free, no limit)
+// 2. Get live tide data from NOAA
     double currentTide = getCurrentTide();
     auto events = getTideEvents();
 
-    // Get today's date boundaries in local time
-    std::time_t nowForFilter = std::time(nullptr);
-    std::tm* localNow = std::localtime(&nowForFilter);
-    std::tm startOfDay = *localNow;
-    startOfDay.tm_hour = 0; startOfDay.tm_min = 0; startOfDay.tm_sec = 0;
-    std::time_t todayStart = std::mktime(&startOfDay);
-    std::tm endOfDay = *localNow;
-    endOfDay.tm_hour = 23; endOfDay.tm_min = 59; endOfDay.tm_sec = 59;
-    std::time_t todayEnd = std::mktime(&endOfDay);
+    // Sliding 24-hour window: 12 hours behind to 12 hours ahead
+    std::time_t now = std::time(nullptr);
+    std::time_t windowStart = now - (12 * 3600); // -12 hours
+    std::time_t windowEnd   = now + (12 * 3600); // +12 hours
 
     std::vector<std::string> highs, lows;
     for (size_t i = 0; i < events.size(); ++i) {
-        // Only include events from today
-        if (events[i].timestamp < todayStart || events[i].timestamp > todayEnd) continue;
+        if (events[i].timestamp < windowStart || events[i].timestamp > windowEnd) continue;
+        
         std::ostringstream entry;
         entry << fmtTime(events[i].timestamp)
               << " (" << std::fixed << std::setprecision(1)
