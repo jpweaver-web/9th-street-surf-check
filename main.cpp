@@ -202,8 +202,16 @@ int main() {
         res.set_content("ok", "text/plain");
     });
 
-    std::cout << "Server running at http://localhost:8080\n";
+    // Read dynamic port assigned by Render (defaults to 8080 locally)
+    const char* port_env = std::getenv("PORT");
+    int port = port_env ? std::atoi(port_env) : 8080;
+
+    std::cout << "Server starting on port " << port << "...\n";
     std::cout << "Reads StormGlass data from: " << CACHE_FILE << "\n";
     std::cout << "NOAA tide data fetched live (no daily limit)\n";
-    svr.listen("0.0.0.0", 8080);
+
+    if (!svr.listen("0.0.0.0", port)) {
+        std::cerr << "Error: Server failed to listen on port " << port << std::endl;
+        return 1;
+    }
 }
