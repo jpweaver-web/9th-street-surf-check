@@ -16,7 +16,8 @@ WORKDIR /app
 COPY . .
 
 # Compile your server binary (adjust source filenames if needed)
-RUN g++ -O3 -std=c++17 main.cpp tideTest.cpp -o server -lpthread -lssl -lcrypto -lcurl# 2. Runtime Stage
+RUN g++ -O3 -std=c++17 main.cpp tideTest.cpp -o server -lpthread -lssl -lcrypto -lcurl
+# 2. Runtime Stage
 FROM ubuntu:22.04
 
 RUN apt-get update && apt-get install -y \
