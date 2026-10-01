@@ -17,11 +17,22 @@
       flex-direction:column;
     }
 
-    .page{width:100%;padding:1.5rem 2.5rem;flex:1;display:flex;flex-direction:column}
+    /* Full-width page, no max-width cap */
+    .page{
+      width:100%;
+      max-width:1500px;
+      margin:0 auto;
+      padding:2rem clamp(1rem, 3vw, 3rem);
+      flex:1;
+      display:flex;
+      flex-direction:column;
+    }
 
     header{
       display:flex;align-items:center;justify-content:space-between;
-      padding:2rem 2.5rem;
+      flex-wrap:wrap;
+      gap:1rem;
+      padding:1.5rem 2.5rem;
       background:rgba(255,255,255,0.07);
       backdrop-filter:blur(20px);
       border:1px solid rgba(255,255,255,0.15);
@@ -30,13 +41,13 @@
     }
     header h1{
       font-family:"Brush Script MT",cursive;
-      font-size:88px;font-weight:400;line-height:0.95;
+      font-size:clamp(44px, 6vw, 72px);font-weight:400;line-height:0.95;
       text-shadow:0 2px 20px rgba(0,100,255,0.4);
     }
-    .header-sub{font-size:17px;color:rgba(255,255,255,0.75);margin-top:8px;font-family:'Quicksand',sans-serif;font-weight:600}
+    .header-sub{font-size:16px;color:rgba(255,255,255,0.75);margin-top:6px;font-family:'Quicksand',sans-serif;font-weight:600}
     .refresh-btn{
       display:flex;align-items:center;gap:9px;
-      padding:13px 28px;
+      padding:12px 24px;
       background:rgba(255,255,255,0.1);
       border:1px solid rgba(255,255,255,0.22);
       border-radius:999px;
@@ -51,142 +62,142 @@
     .dot.error{background:#f87171}
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 
+    /* GRID LAYOUT */
     .grid{
       display:grid;
-      grid-template-columns:1.3fr 1.9fr 1.1fr;
-      grid-template-rows:minmax(340px,1fr) 340px minmax(140px,auto);
-      gap:1.25rem;
+      grid-template-columns: minmax(0,1fr) minmax(0,1.6fr) minmax(0,1fr);
+      grid-template-rows: auto auto auto;
+      gap:1.5rem;
       flex:1;
     }
 
     .card{
+      min-width:0;
       background:rgba(255,255,255,0.07);
       backdrop-filter:blur(20px);
       border:1px solid rgba(255,255,255,0.14);
       border-radius:20px;
       padding:1.75rem;
       color:#fff;
+      display:flex;
+      flex-direction:column;
     }
     .lbl{
       font-family:'Quicksand',sans-serif;
-      font-size:24px;font-weight:700;
+      font-size:20px;font-weight:700;
       letter-spacing:.04em;text-transform:uppercase;
       color:rgba(255,255,255,0.8);
-      margin-bottom:1.1rem;
+      margin-bottom:1rem;
     }
 
     /* RATING CARD */
-    .rating-card{grid-column:1;grid-row:1/4;display:flex;flex-direction:column;gap:1.25rem}
-    .rating-num{font-size:140px;font-weight:300;line-height:1;letter-spacing:-6px}
-    .bar-track{height:7px;background:rgba(255,255,255,0.15);border-radius:999px;overflow:hidden}
+    .rating-card{
+      grid-column:1;
+      grid-row:span 3;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+    .rating-num{font-size:100px;font-weight:300;line-height:1;letter-spacing:-4px}
+    .bar-track{height:8px;background:rgba(255,255,255,0.15);border-radius:999px;overflow:hidden;margin-top:0.5rem;margin-bottom:1.5rem}
     .bar-fill{height:100%;border-radius:999px;background:#4ade80;width:0%;transition:width .6s ease,background .6s ease}
-    .rating-sub{font-size:15px;color:rgba(255,255,255,0.55);font-family:'Quicksand',sans-serif;font-weight:600}
-    
-    .comparison {
-      margin-top: 0.5rem;
-      background: rgba(0,0,0,0.2);
-      border-radius: 14px;
-      padding: 1.25rem 1rem;
+
+    .comparison{
+      background: rgba(0,0,0,0.22);
+      border-radius: 16px;
+      padding: 1.5rem 1rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
+      justify-content: center;
       flex: 1;
-      min-height: 0;
       border: 1px solid rgba(255,255,255,0.08);
+      min-height: 0;
     }
     .comp-empty { font-size:14px; color:rgba(255,255,255,0.4); font-style:italic; text-align:center; width:100%; margin:auto }
 
-    #ratingComparisonCard {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      width: 100%;
-      height: 100%;
-      text-align: center;
+    #ratingComparisonCard{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      width:100%;
+      text-align:center;
+      gap:1.25rem;
     }
 
-    /* Top Prompt: Restored large size with UI header font/color style */
     .song-intro-lbl {
-      font-family: inherit;
-      font-size: 25px;
-      font-weight: 300;
-      letter-spacing: 1.5px;
-      color: rgba(248, 248, 248, 0.891);
-      margin-top: 2.5rem;
-      margin-bottom: -5rem;
-      font-family: fantasy;
-
+      font-size: 16px;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      color: rgba(255, 255, 255, 0.75);
+      font-family: 'Quicksand', sans-serif;
     }
 
-    /* Album Cover: Shifted down further */
-    #tierImage {
-      width: 70%;
-      aspect-ratio: 1 / 1;
-      object-fit: cover;
-      border-radius: 8px;
-      transform: translateY(120px); 
+    #tierImage{
+      width:100%;
+      max-width:300px;
+      aspect-ratio:1/1;
+      object-fit:cover;
+      border-radius:14px;
+      box-shadow:0 12px 32px rgba(0,0,0,0.5);
     }
 
-    /* Bottom Song Container: Shifted up closer to image bottom */
     .rating-details-bottom {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       width: 100%;
-      margin-top: auto;
-      transform: translateY(-200px); 
-      font-size: 40 px;
     }
 
     /* WAVE CARD */
     .wave-card{
       grid-column:2;
       grid-row:1;
-      display:flex;
-      flex-direction:column;
+      min-height:320px;
     }
     .wave-card-body{
       display:flex;
       flex-direction:column;
-      gap:0.75rem;
+      gap:1rem;
       flex:1;
-      overflow:hidden;
     }
     .wave-scene{
-      flex:1;position:relative;
-      border-radius:14px;overflow:hidden;
+      flex:none;
+      position:relative;
+      border-radius:14px;
+      overflow:hidden;
       background:linear-gradient(180deg,rgba(5,20,50,0.6) 0%,rgba(2,10,30,0.8) 100%);
-      min-height:0;
+      aspect-ratio:600/160;
       width:100%;
+      min-height:0;
     }
     .wave-scene svg{position:absolute;inset:0;width:100%;height:100%}
     .wave-readout-row{
       display:flex;
-      flex-direction:column;
-      align-items:flex-start;
-      gap:0.25rem;
-      margin-top:.2rem;
+      align-items:baseline;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      gap:0.5rem;
     }
-    .wave-readout{display:flex;align-items:baseline;gap:.4rem;flex-wrap:wrap}
+    .wave-readout{display:flex;align-items:baseline;gap:.4rem}
     .wave-ft{font-size:42px;font-weight:300;line-height:1}
     .wave-unit{font-size:18px;color:rgba(255,255,255,0.65)}
-    .wave-desc{font-size:14px;color:rgba(255,255,255,0.6);font-family:'Quicksand',sans-serif;font-weight:600;margin-left:.5rem}
+    .wave-desc{font-size:15px;color:rgba(255,255,255,0.65);font-family:'Quicksand',sans-serif;font-weight:600;margin-left:.5rem}
     .swell-info{font-size:15px;color:rgba(255,255,255,0.75);font-family:'Quicksand',sans-serif;display:flex;align-items:center;gap:6px;font-weight:600}
 
     /* WIND */
-    .wind-card{grid-column:3;grid-row:1;display:flex;flex-direction:column}
+    .wind-card{grid-column:3;grid-row:1;min-height:320px}
     .compass-wrap{
       flex:1;position:relative;
       display:flex;align-items:center;justify-content:center;
-      min-height:200px;overflow:visible;
+      min-height:180px;
     }
-    .compass-svg{width:min(105%,310px);height:min(105%,310px)}
+    .compass-svg{position:absolute;inset:0;width:100%;height:100%}
     .c-arrow{
       position:absolute;left:50%;top:50%;
-      width:5px;height:88px;
+      width:4px;height:65px;
       background:#fff;
       transform-origin:bottom center;
       transform:translateX(-50%) translateY(-100%) rotate(0deg);
@@ -194,29 +205,26 @@
       filter:drop-shadow(0 0 6px rgba(255,255,255,0.7));
       transition:transform 0.8s cubic-bezier(0.4,0,0.2,1)
     }
-    .c-arrow::after{content:"";position:absolute;bottom:100%;left:50%;margin-left:-9px;border-left:9px solid transparent;border-right:9px solid transparent;border-bottom:18px solid #fff}
-    .wind-readout{text-align:center;padding-top:.75rem;border-top:1px solid rgba(255,255,255,0.1)}
-    .wind-spd{font-size:48px;font-weight:300}
-    .wind-unit-lbl{font-size:17px;color:rgba(255,255,255,0.65);margin-left:4px}
-    .wind-dir-lbl{display:block;font-size:20px;color:rgba(255,255,255,0.8);font-family:'Quicksand',sans-serif;font-weight:600;margin-top:2px}
+    .c-arrow::after{content:"";position:absolute;bottom:100%;left:50%;margin-left:-8px;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:16px solid #fff}
+    .wind-readout{text-align:center;padding-top:.5rem;border-top:1px solid rgba(255,255,255,0.1)}
+    .wind-spd{font-size:38px;font-weight:300}
+    .wind-unit-lbl{font-size:16px;color:rgba(255,255,255,0.65);margin-left:4px}
+    .wind-dir-lbl{display:block;font-size:16px;color:rgba(255,255,255,0.8);font-family:'Quicksand',sans-serif;font-weight:600;margin-top:2px}
 
     /* TIDE */
-    .tide-card{grid-column:2/4;grid-row:2;display:flex;flex-direction:column}
-    #tideGraph{display:block;width:100%;flex:1;border-radius:10px;min-height:190px}
-    .tide-meta{display:flex;gap:2.5rem;margin-top:1rem;flex-wrap:wrap}
-    .tide-meta-item{font-size:20px;color:rgba(255,255,255,0.7);font-family:'Quicksand',sans-serif;font-weight:600}
+    .tide-card{grid-column:2/4;grid-row:2;min-height:300px}
+    #tideGraph{display:block;width:100%;flex:1;border-radius:10px;min-height:180px}
+    .tide-meta{display:flex;gap:2.5rem;margin-top:0.75rem;flex-wrap:wrap}
+    .tide-meta-item{font-size:18px;color:rgba(255,255,255,0.7);font-family:'Quicksand',sans-serif;font-weight:600}
     .tide-meta-item strong{color:#fff;font-weight:700}
 
     /* TEMP */
     .temp-card{
       grid-column:2/4;grid-row:3;
-      display:flex;flex-direction:column;
     }
     .temp-row{
       display:flex;gap:1.25rem;
       flex:1;
-      margin-top:.5rem;
-      min-height:0;
     }
     .temp-pill{
       flex:1;
@@ -227,15 +235,13 @@
       text-align:center;
       display:flex;flex-direction:column;
       justify-content:center;align-items:center;
-      overflow:hidden;
     }
-    .temp-pill-lbl{font-size:14px;color:rgba(255,255,255,0.65);font-family:'Quicksand',sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.3rem}
-    .temp-pill-val{font-size:44px;font-weight:300;line-height:1}
-    .temp-pill-unit{font-size:20px;color:rgba(255,255,255,0.65)}
+    .temp-pill-lbl{font-size:13px;color:rgba(255,255,255,0.65);font-family:'Quicksand',sans-serif;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:.2rem}
+    .temp-pill-val{font-size:36px;font-weight:300;line-height:1}
+    .temp-pill-unit{font-size:18px;color:rgba(255,255,255,0.65)}
 
     .dash{color:rgba(255,255,255,0.25)}
 
-    /* Tide tooltip */
     .tide-tooltip{
       position:fixed;
       background:rgba(10,20,50,0.92);
@@ -250,6 +256,55 @@
       display:none;
       z-index:999;
       white-space:nowrap;
+    }
+
+    /* RESPONSIVE (keep these after the base rules) */
+    @media (max-width: 1200px){
+      .grid{ grid-template-columns:minmax(0,1fr) minmax(0,1fr); }
+      .rating-card{ grid-column:1; grid-row:span 2; }
+      .wave-card{ grid-column:2; grid-row:1; }
+      .wind-card{ grid-column:2; grid-row:2; }
+      .tide-card, .temp-card{ grid-column:1 / 3; grid-row:auto; }
+    }
+
+    @media (max-width: 800px){
+      .page{ padding:0.75rem; }
+      header{ padding:1rem 1.25rem; }
+      .card{ padding:1.25rem; }
+      .grid{ grid-template-columns:minmax(0,1fr); gap:1rem; }
+      .rating-card, .wave-card, .wind-card, .tide-card, .temp-card{
+        grid-column:1; grid-row:auto;
+      }
+      .rating-num{ font-size:72px; }
+    }
+
+    /* FIT ON ONE SCREEN (laptops/desktops) */
+    @media (min-width: 1201px) and (min-height: 620px){
+      body{ height:100vh; overflow:hidden; }
+      .page{ height:100vh; padding:1rem clamp(1rem,2vw,2rem); }
+      header{ padding:.6rem 1.5rem; margin-bottom:1rem; }
+      header h1{ font-size:44px; }
+      .header-sub{ font-size:14px; margin-top:2px; }
+      .refresh-btn{ padding:8px 18px; }
+      .grid{ min-height:0; gap:1rem; grid-template-rows:minmax(0,1.25fr) minmax(0,1fr) auto; }
+      .card{ padding:1rem 1.25rem; min-height:0; }
+      .lbl{ font-size:16px; margin-bottom:.5rem; }
+      .rating-num{ font-size:64px; }
+      .bar-track{ margin-bottom:.75rem; }
+      .comparison{ padding:.75rem; min-height:0; overflow:hidden; }
+      #ratingComparisonCard{ flex:1; min-height:0; gap:.5rem; }
+      #tierImage{ flex:1 1 0; min-height:0; width:auto; max-width:100%; }
+      .wave-card, .wind-card, .tide-card{ min-height:0; }
+      .wave-card-body{ min-height:0; gap:.5rem; }
+      .wave-scene{ flex:1; aspect-ratio:auto; min-height:0; }
+      .wave-ft{ font-size:32px; }
+      .compass-wrap{ min-height:0; }
+      .wind-spd{ font-size:30px; }
+      #tideGraph{ flex:1 1 0; height:0; min-height:0; }
+      .tide-meta{ margin-top:.4rem; }
+      .tide-meta-item{ font-size:15px; }
+      .temp-pill{ padding:.5rem; }
+      .temp-pill-val{ font-size:28px; }
     }
   </style>
 </head>
@@ -271,24 +326,23 @@
 
     <!-- RATING CARD -->
     <div class="card rating-card">
-      <div class="lbl">Surf Rating</div>
-      <div class="rating-num" id="ratingNum"><span class="dash">—</span></div>
-      <div class="bar-track"><div class="bar-fill" id="ratingBar"></div></div>
-      
+      <div>
+        <div class="lbl">Surf Rating</div>
+        <div class="rating-num" id="ratingNum"><span class="dash">—</span></div>
+        <div class="bar-track"><div class="bar-fill" id="ratingBar"></div></div>
+      </div>
+
       <div class="comparison" id="compBlock">
         <div class="comp-empty" id="compEmpty">refresh to see today's rating</div>
-        
+
         <div id="ratingComparisonCard" style="display: none;">
-          <!-- Top Prompt Label -->
           <div class="song-intro-lbl">If the conditions were a song...</div>
 
-          <!-- Centered Album Image -->
           <img id="tierImage" src="" alt="Rating Reaction" onerror="this.style.display='none'"/>
-          
-          <!-- Bottom Song Details -->
+
           <div class="rating-details-bottom">
             <div style="display: flex; align-items: center; justify-content: center; gap: 8px;">
-              <h4 id="tierTitle" style="font-family: inherit; font-size: 20px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255, 255, 255, 0.9); margin: 0;"></h4>
+              <h4 id="tierTitle" style="font-family: inherit; font-size: 15px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: rgba(255, 255, 255, 0.9); margin: 0;"></h4>
               <button id="audioToggleBtn" style="display: none; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 50%; width: 28px; height: 28px; color: #fff; cursor: pointer; align-items: center; justify-content: center; font-size: 12px; padding: 0;">
                 ▶
               </button>
@@ -303,7 +357,7 @@
       <div class="lbl">Wave Height</div>
       <div class="wave-card-body">
         <div class="wave-scene">
-          <svg id="waveSvg" viewBox="0 0 600 280" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+          <svg id="waveSvg" viewBox="0 120 600 160" preserveAspectRatio="xMidYMax meet" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <linearGradient id="seaGrad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stop-color="rgba(30,120,210,0.9)"/>
@@ -316,9 +370,9 @@
               </linearGradient>
             </defs>
 
-            <rect x="0" y="0" width="600" height="280" fill="rgba(5,15,40,0.3)"/>
-            <rect x="0" y="230" width="600" height="50" fill="url(#seaGrad)"/>
-            
+            <rect x="-600" y="-600" width="1800" height="880" fill="rgba(5,15,40,0.3)"/>
+            <rect x="-600" y="230" width="1800" height="50" fill="url(#seaGrad)"/>
+
             <path id="mainWave" d="M0,230 L180,230 C220,228 260,215 290,200 C310,180 320,165 330,160 C345,146 360,142 375,146 C395,150 410,168 440,196 C470,226 500,220 600,225 L600,280 L0,280 Z" fill="url(#waveGrad)"/>
 
             <line id="waveCrestLine" x1="28" y1="160" x2="360" y2="160" stroke="rgba(255,255,255,0.25)" stroke-width="1" stroke-dasharray="4,4"/>
@@ -330,7 +384,7 @@
               <line x1="510" y1="183" x2="521" y2="197" stroke="rgba(255,255,255,0.92)" stroke-width="3.5" stroke-linecap="round"/>
               <line x1="510" y1="205" x2="504" y2="230" stroke="rgba(255,255,255,0.92)" stroke-width="4" stroke-linecap="round"/>
               <line x1="510" y1="205" x2="516" y2="230" stroke="rgba(255,255,255,0.92)" stroke-width="4" stroke-linecap="round"/>
-              
+
               <line x1="528" y1="166" x2="528" y2="230" stroke="rgba(255,255,255,0.35)" stroke-width="1" stroke-dasharray="3,2"/>
               <line x1="524" y1="166" x2="532" y2="166" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
               <line x1="524" y1="230" x2="532" y2="230" stroke="rgba(255,255,255,0.35)" stroke-width="1.5"/>
@@ -382,8 +436,11 @@
           <text x="193" y="200" text-anchor="middle" font-size="13" fill="rgba(255,255,255,0.4)" font-family="Quicksand,sans-serif">SE</text>
           <text x="47" y="200" text-anchor="middle" font-size="13" fill="rgba(255,255,255,0.4)" font-family="Quicksand,sans-serif">SW</text>
           <text x="47" y="45" text-anchor="middle" font-size="13" fill="rgba(255,255,255,0.4)" font-family="Quicksand,sans-serif">NW</text>
+          <g id="windArrow" transform="rotate(180 120 120)">
+            <line x1="120" y1="120" x2="120" y2="42" stroke="#fff" stroke-width="5" stroke-linecap="round" style="filter:drop-shadow(0 0 6px rgba(255,255,255,0.7))"/>
+            <polygon points="120,24 110,46 130,46" fill="#fff"/>
+          </g>
         </svg>
-        <div class="c-arrow" id="windArrow"></div>
       </div>
       <div class="wind-readout">
         <span class="wind-spd" id="windSpd"><span class="dash">—</span></span>
@@ -462,7 +519,7 @@ function setupAudioButton(audioSrc) {
 }
 
 function ratingColor(r){if(r>=8)return"#4ade80";if(r>=6)return"#fbbf24";if(r>=4)return"#f97316";return"#f87171"}
-function updateWindArrow(deg){document.getElementById("windArrow").style.transform=`translateX(-50%) translateY(-100%) rotate(${(deg+180)%360}deg)`}
+function updateWindArrow(deg){document.getElementById("windArrow").setAttribute("transform",`rotate(${(deg+180)%360} 120 120)`)}
 
 /* WAVE SCENE */
 function updateWaveScene(wh){
@@ -474,7 +531,7 @@ function updateWaveScene(wh){
 
   const pxPerFt=10.98;
   const seaY=230;
-  const crestY=Math.max(20,Math.min(215,seaY-wh*pxPerFt));
+  const crestY=Math.max(125,Math.min(215,seaY-wh*pxPerFt));
 
   document.getElementById("bracketVert").setAttribute("y1",crestY);
   document.getElementById("bracketVert").setAttribute("y2",seaY);
@@ -492,13 +549,13 @@ function updateWaveScene(wh){
 
   const c1=crestY+10,c2=crestY+25;
   document.getElementById("mainWave").setAttribute("d",`
-    M0,${seaY} L180,${seaY}
+    M-600,${seaY} L180,${seaY}
     C220,228 260,215 290,${c2}
     C310,${c1+10} 320,${crestY+8} 330,${crestY}
     C345,${crestY-14} 360,${crestY-18} 375,${crestY-14}
     C395,${crestY-10} 410,${crestY+8} 440,${c1+36}
-    C470,${c2+36} 500,220 600,225
-    L600,280 L0,280 Z`);
+    C470,${c2+36} 500,220 1200,225
+    L1200,280 L-600,280 Z`);
 }
 
 /* TIDE GRAPH */
@@ -576,6 +633,7 @@ function setupTideHover() {
 }
 
 function drawTide(timesRaw,heightsRaw){
+  window.__tide=[timesRaw,heightsRaw];
   const[times,heights]=filterSurfingHours(timesRaw,heightsRaw);
   _tideTimes = times; _tideHeights = heights;
   const canvas=document.getElementById("tideGraph");
@@ -630,11 +688,11 @@ function drawTide(timesRaw,heightsRaw){
   for(let i=1;i<times.length;i++)ctx.lineTo(xp(times[i]),yp(heights[i]));
   ctx.strokeStyle="rgba(74,222,128,0.9)";ctx.lineWidth=2.5;ctx.stroke();
 
-  // PROMINENT NOW INDICATOR
+  // NOW INDICATOR
   const nowSec=Date.now()/1000;
   if(nowSec>=minT&&nowSec<=maxT){
     const xx=xp(nowSec);
-    
+
     ctx.strokeStyle="#fbbf24";
     ctx.lineWidth=3;
     ctx.setLineDash([6,4]);
@@ -696,7 +754,6 @@ async function updateConditions(){
     bar.style.width=Math.min(100,(rating/10)*100)+"%";
     bar.style.background=ratingColor(rating);
 
-    // Update Image Rating Card
     const card = getRatingCard(rating);
     document.getElementById('compEmpty').style.display = 'none';
     document.getElementById('tierTitle').textContent = `${rating.toFixed(1)} — ${card.title}`;
@@ -705,7 +762,6 @@ async function updateConditions(){
     imgEl.style.display = 'block';
     document.getElementById('ratingComparisonCard').style.display = 'flex';
 
-    // Hook up audio player button with audio track relative path from ratingMap.js
     setupAudioButton(card.audio);
 
     updateWaveScene(Number(data.waveHeight));
@@ -755,6 +811,7 @@ async function updateConditions(){
 }
 
 document.getElementById("refreshBtn").addEventListener("click", updateConditions);
+window.addEventListener("resize",()=>{ if(window.__tide) drawTide(window.__tide[0],window.__tide[1]); });
 setupTideHover();
 updateConditions();
 </script>

@@ -1,15 +1,15 @@
 {
-  "airTemp": 75.866,
-  "currentTide": 1.5111948346357307,
-  "rating": 8.8,
-  "reaction": "It's nice out",
+  "airTemp": 79.97,
+  "currentTide": 4.16255208867535,
+  "rating": 8.6,
+  "reaction": "It's decent",
   "spot": "9th Street, Huntington Beach",
-  "swellDirection": "W",
-  "swellDirectionDegrees": 277.63,
-  "updated": "Wed Sep 30 16:37:48 2026\n",
-  "waterTemp": 74.084,
-  "waveHeight": 3.3455999999999997,
-  "windDirection": "SSW",
-  "windDirectionDegrees": 208.21,
-  "windSpeed": 4.8400620000000005
+  "swellDirection": "S",
+  "swellDirectionDegrees": 189.98,
+  "updated": "Thu Oct  1 15:22:39 2026\n",
+  "waterTemp": 73.418,
+  "waveHeight": 3.0831999999999997,
+  "windDirection": "SW",
+  "windDirectionDegrees": 231.03,
+  "windSpeed": 5.656458
 }

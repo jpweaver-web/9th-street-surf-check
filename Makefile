@@ -1,13 +1,16 @@
 JSON_INC = /opt/homebrew/Cellar/nlohmann-json/3.11.3/include
-FLAGS = -std=c++17 -lcurl -I$(JSON_INC)
+CXXFLAGS = -std=c++17 -I$(JSON_INC)
+LIBS = -lcurl
 
 all: server conditionsTest
 
 server:
-	g++ $(FLAGS) server.cpp tideTest.cpp -o server
+	g++ $(CXXFLAGS) main.cpp tideTest.cpp -o server $(LIBS)
 
 conditionsTest:
-	g++ $(FLAGS) conditionsTest.cpp tideTest.cpp -o conditionsTest
+	g++ $(CXXFLAGS) conditionsTest.cpp tideTest.cpp -o conditionsTest $(LIBS)
 
 clean:
 	rm -f server conditionsTest
+
+.PHONY: all clean

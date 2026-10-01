@@ -25,6 +25,8 @@ FROM ubuntu:22.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 
+ENV TZ=America/Los_Angeles
+
 # Install runtime libraries
 RUN apt-get update && apt-get install -y \
     ca-certificates \
