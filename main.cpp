@@ -122,7 +122,6 @@ nlohmann::json buildResponseJson() {
     auto events = getTideEvents();
 
     // Sliding 24-hour window: 12 hours behind to 12 hours ahead
-    std::time_t now = std::time(nullptr);
     std::time_t windowStart = now - (12 * 3600); // -12 hours
     std::time_t windowEnd   = now + (12 * 3600); // +12 hours
 
