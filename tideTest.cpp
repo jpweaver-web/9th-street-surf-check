@@ -16,7 +16,7 @@ size_t WriteCallback(void *contents, size_t size, size_t nmemb, void *userp) {
 
 std::string getDateOffset(int offsetDays) {
     std::time_t now = std::time(nullptr) + offsetDays * 86400;
-    std::tm* tm = std::localtime(&now);
+    std::tm* tm = std::gmtime(&now);
     std::ostringstream oss;
     oss << std::put_time(tm, "%Y%m%d");
     return oss.str();
@@ -28,7 +28,7 @@ std::string getNOAATideURL(const std::string& startDate, const std::string& endD
            "product=predictions&application=surfapp&begin_date=" + startDate +
            "&end_date=" + endDate +
            "&datum=MLLW&station=" + station +
-           "&time_zone=lst_ldt&units=english&interval=10&format=json";
+           "&time_zone=gmt&units=english&interval=10&format=json";
 }
 
 std::string fetchDataFromNOAA(const std::string& url) {
@@ -66,9 +66,7 @@ std::vector<TideEvent> getTideEvents() {
     cachedEvents.clear();
     cachedDate = "";
 
-    std::string url = getNOAATideURL(today, getDateOffset(1));
-    std::cerr << "[NOAA] Fetching tides for " << today << std::endl;
-
+std::string url = getNOAATideURL(getDateOffset(-1), getDateOffset(1));
     try {
         std::string response = fetchDataFromNOAA(url);
         auto json = nlohmann::json::parse(response);
@@ -82,8 +80,7 @@ std::vector<TideEvent> getTideEvents() {
             std::tm tm = {};
             std::istringstream ss(entry["t"].get<std::string>());
             ss >> std::get_time(&tm, "%Y-%m-%d %H:%M");
-            tm.tm_isdst = -1;
-            std::time_t timestamp = mktime(&tm);
+            std::time_t timestamp = timegm(&tm);            
             double height = std::stod(entry["v"].get<std::string>());
             char type = 'U';
             if (entry.contains("type") && !entry["type"].is_null()) {
