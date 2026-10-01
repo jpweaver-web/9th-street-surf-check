@@ -686,7 +686,7 @@ async function updateConditions(){
   const lbl=document.getElementById("btnLbl");
   btn.disabled=true;dot.className="dot loading";lbl.textContent="Updating…";
   try{
-    const res=await fetch("https://nineth-street-surf-check.onrender.com/api/conditions");
+    const res = await fetch("https://ninth-street-surf-check.onrender.com/api/conditions");
     const data=await res.json();
     if(!res.ok)throw new Error(data.error||"fetch failed");
 
